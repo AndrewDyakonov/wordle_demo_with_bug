@@ -13,4 +13,10 @@ def get_words_in_txt():
             file.write(i.lower())
 
 
-
+def get_text():
+    """получить слова из словаря"""
+    list_word = []
+    with open('new_rus.txt', 'r', encoding="UTF-8") as file:
+        for i in file:
+            list_word.append(i)
+    return list_word
