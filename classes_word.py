@@ -4,7 +4,7 @@ import classes_keybord
 import utils
 
 
-class ButtonWord():
+class ButtonWord:
     def __init__(self, frame_1, frame_2, list_box):
         self.frame = frame_1
         self.frame_2 = frame_2
@@ -55,7 +55,7 @@ class ButtonWord():
         self.btn_34 = tkinter.Button(frame_1, height=1, width=5, padx=10, pady=4, text='Check')
 
         self.__draw_field()
-        self.add_command_button()
+        self.__add_command_button()
 
     def __draw_field(self):
         """отрисовать поле для ввода"""
@@ -94,11 +94,7 @@ class ButtonWord():
         self.btn_33.place(x=75, y=200)
         self.btn_34.place(x=200, y=200)
 
-    def __choise_field(self, btn):
-        """выбор поля для ввода"""
-        self.classes_key = btn
-
-    def add_command_button(self):
+    def __add_command_button(self):
         """Назначить действие кнопке"""
         self.btn_1.config(command=lambda btn=self.btn_1: self.__choise_field(btn))
         self.btn_2.config(command=lambda btn=self.btn_2: self.__choise_field(btn))
@@ -130,12 +126,16 @@ class ButtonWord():
         self.btn_28.config(command=lambda btn=self.btn_28: self.__choise_field(btn))
         self.btn_29.config(command=lambda btn=self.btn_29: self.__choise_field(btn))
         self.btn_30.config(command=lambda btn=self.btn_30: self.__choise_field(btn))
-        self.btn_31.config(command=lambda btn=self.btn_31: self.change_color(btn))
-        self.btn_32.config(command=lambda btn=self.btn_32: self.change_color(btn))
-        self.btn_33.config(command=lambda btn=self.btn_33: self.check_letter_in_slovar())
-        self.btn_34.config(command=lambda btn=self.btn_34: self.create_chech_word())
+        self.btn_31.config(command=lambda btn=self.btn_31: self.__change_color(btn))
+        self.btn_32.config(command=lambda btn=self.btn_32: self.__change_color(btn))
+ #       self.btn_33.config(command=lambda btn=self.btn_33: self.check_letter_in_slovar())
+        self.btn_34.config(command=lambda btn=self.btn_34: self.__create_chech_word())
 
-    def change_color(self, btn):
+    def __choise_field(self, btn):
+        """выбор поля для ввода"""
+        self.classes_key = btn
+
+    def __change_color(self, btn):
         """сменить цвет кнопки"""
         text_button = btn.cget('bg')
         self.classes_key.config(bg=text_button)
@@ -145,7 +145,7 @@ class ButtonWord():
         a = utils.get_text()
         self.slovar = a
 
-    def create_chech_word(self):
+    def __create_chech_word(self):
         """Составить слово из ячеек"""
         self.word = []
         self.list_box.delete(1.0, 'end')
@@ -154,8 +154,9 @@ class ButtonWord():
         self.word.append(self.btn_3.cget('text'))
         self.word.append(self.btn_4.cget('text'))
         self.word.append(self.btn_5.cget('text'))
+        self.__check_letter_in_slovar()
 
-    def check_letter_in_slovar(self):
+    def __check_letter_in_slovar(self):
         """Поиск слов в словаре"""
         self.load_word()
         slovar_green = ['', '', '', '', '']
@@ -227,7 +228,6 @@ class ButtonWord():
         if len(set_five) > 0:
             set_list.append(set_five)
             count += 1
-
 
         if count == 1:
             result_list = set_first.union(*set_list)
