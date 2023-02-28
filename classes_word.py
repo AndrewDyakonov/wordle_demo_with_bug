@@ -1,17 +1,15 @@
 import tkinter
-
-import classes_keybord
 import utils
 
 
 class ButtonWord:
-    def __init__(self, frame_1, frame_2, list_box):
+    def __init__(self, frame_1, frame_2, list_box, entry):
         self.frame = frame_1
         self.frame_2 = frame_2
-        self.classes_key = None                                                 # какая кнопка нажата
         self.list_box = list_box
         self.word = []                                                          # получившееся слово
         self.slovar = []                                                        # весь словарь
+        self.entry = entry
 
         self.btn_1 = tkinter.Button(frame_1, height=1, width=1, padx=10, pady=4)
         self.btn_2 = tkinter.Button(frame_1, height=1, width=1, padx=10, pady=4)
@@ -54,6 +52,9 @@ class ButtonWord:
         # Кнопка проверки слов
         self.btn_34 = tkinter.Button(frame_1, height=1, width=5, padx=10, pady=4, text='Check')
 
+        # Кнопка ввода слов
+        self.btn_35 = tkinter.Button(frame_2, height=1, width=1, padx=20, pady=1, text='Ввод')
+
         self.__draw_field()
         self.__add_command_button()
 
@@ -93,6 +94,7 @@ class ButtonWord:
         self.btn_32.place(x=40, y=200)
         self.btn_33.place(x=75, y=200)
         self.btn_34.place(x=200, y=200)
+        self.btn_35.place(x=150, y=40)
 
     def __add_command_button(self):
         """Назначить действие кнопке"""
@@ -128,8 +130,27 @@ class ButtonWord:
         self.btn_30.config(command=lambda btn=self.btn_30: self.__choise_field(btn))
         self.btn_31.config(command=lambda btn=self.btn_31: self.__change_color(btn))
         self.btn_32.config(command=lambda btn=self.btn_32: self.__change_color(btn))
- #       self.btn_33.config(command=lambda btn=self.btn_33: self.check_letter_in_slovar())
-        self.btn_34.config(command=lambda btn=self.btn_34: self.__create_chech_word())
+ #      self.btn_33.config(command=lambda btn=self.btn_33: self.check_letter_in_slovar())
+        self.btn_34.config(command=lambda btn=self.btn_34: self.__check_letter_in_word())
+        self.btn_35.config(command=lambda: self.__write_word())
+
+    def __get_text(self):
+        """Вернуть текст набранный в поле ввода"""
+        text = self.entry.get()
+        if len(text) != 5:
+            print("Введите слово из 5 букв")
+        else:
+            return text.lower()
+
+    def __write_word(self):
+        """Записать введенное слово в ячейки"""
+        text = self.__get_text()
+        self.entry.delete(0, "end")
+        self.btn_1.config(text=text[0])
+        self.btn_2.config(text=text[1])
+        self.btn_3.config(text=text[2])
+        self.btn_4.config(text=text[3])
+        self.btn_5.config(text=text[4])
 
     def __choise_field(self, btn):
         """выбор поля для ввода"""
@@ -154,19 +175,12 @@ class ButtonWord:
         self.word.append(self.btn_3.cget('text'))
         self.word.append(self.btn_4.cget('text'))
         self.word.append(self.btn_5.cget('text'))
-        self.__check_letter_in_slovar()
+        self.__create_word_in_letter()
 
-    def __check_letter_in_slovar(self):
-        """Поиск слов в словаре"""
-        self.load_word()
+    def __create_word_in_letter(self):
+        """Составить слова из букв"""
         slovar_green = ['', '', '', '', '']
         slovar_yellow = ['', '', '', '', '']
-        set_list = []
-        first = []
-        second = []
-        true = []
-        four = []
-        five = []
 
         if self.btn_1.cget('bg') == 'green':
             slovar_green[0] = (self.btn_1.cget('text'))
@@ -193,23 +207,42 @@ class ButtonWord:
         elif self.btn_5.cget('bg') == 'yellow':
             slovar_yellow[4] = (self.btn_5.cget('text'))
 
+        return slovar_yellow, slovar_green
+
+
+    def __check_letter_in_word(self):
+        """Составить списки слов по буквам"""
+        first_g = []
+        second_g = []
+        true_g = []
+        four_g = []
+        five_g = []
+
+        set_list = []
+
+        self.load_word()
+        slovar_yellow, slovar_green = self.__create_word_in_letter()
+
         for i in self.slovar:
             if slovar_green[0] != '' and slovar_green[0] == i[0]:
-                first.append(i)
+                first_g.append(i)
             if slovar_green[1] != '' and slovar_green[1] == i[1]:
-                second.append(i)
+                second_g.append(i)
             if slovar_green[2] != '' and slovar_green[2] == i[2]:
-                true.append(i)
+                true_g.append(i)
             if slovar_green[3] != '' and slovar_green[3] == i[3]:
-                four.append(i)
+                four_g.append(i)
             if slovar_green[4] != '' and slovar_green[4] == i[4]:
-                five.append(i)
+                five_g.append(i)
 
-        set_first = set(first)
-        set_second = set(second)
-        set_true = set(true)
-        set_four = set(four)
-        set_five = set(five)
+
+
+
+        set_first = set(first_g)
+        set_second = set(second_g)
+        set_true = set(true_g)
+        set_four = set(four_g)
+        set_five = set(five_g)
 
         count = 0
 
@@ -228,6 +261,8 @@ class ButtonWord:
         if len(set_five) > 0:
             set_list.append(set_five)
             count += 1
+
+
 
         if count == 1:
             result_list = set_first.union(*set_list)
